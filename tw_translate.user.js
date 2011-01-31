@@ -36,13 +36,11 @@ var translate = function () {
         var loaderDiv = document.createElement('div');
         loaderDiv.id = 'google-translate-loader';
         document.body.appendChild(loaderDiv);
-        console.log("I created the div");
     };
 
     var decorate_statuses = function(d) {
         var statuses = d.getElementsByClassName("tweet");
         var n = statuses.length;
-        console.log("Number of statuses"+n);
         for (var i=0; i<n; i++) {
             var status = statuses[i];
             add_translator(status);
@@ -78,10 +76,7 @@ var translate = function () {
         translateLink.attributes.setNamedItem(onclick);
         if (action) {
             action.appendChild(translateLink);
-        } else {
-            console.log("could not find action");
-            console.log(s);
-        }
+        } 
     };
 
     var initialize = function() {      
