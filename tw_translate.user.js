@@ -27,8 +27,7 @@ var translate = function () {
                 decorate_statuses(e.target);
             }
             if (e.target.className == 'inner-pane') {
-                console.log(e.target);
-                decorate_statuses(e.target);
+                window.setTimeout(function () { decorate_statuses(e.target); } , 1000); 
             }
         }
     }
