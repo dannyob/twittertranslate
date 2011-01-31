@@ -52,14 +52,13 @@ var translate = function () {
         }
     };
 
+    var langpair = '%7C'+navigator.language.substr(0,2);
+    var dev_key = ""; // I think we might do better with no key, I can't tell
+    var url = 'https://ajax.googleapis.com/ajax/services/language/translate?v=1.0'+dev_key+'&langpair='+langpair;
+
     var add_translator = function(s) { // add that Translate action, get it to run Google Translate
         if (s.getElementsByClassName("translate_link").length > 0) { 
             return; }
-
-        var langpair = '%7Cen';
-        var dev_key = '&key=AIzaSyBIX8s4xecf9vnwGbxI5zESA59qHy4eNDA';
-        dev_key = ""; // I think we might do better with no key, I can't tell
-        var url = 'https://ajax.googleapis.com/ajax/services/language/translate?v=1.0'+dev_key+'&langpair='+langpair;
 
         var s_id = s.getAttribute('data-item-id') || s.getAttribute('data-tweet-id') || new Date().getTime() ;
         var action = s.getElementsByClassName("tweet-actions")[0];
@@ -138,7 +137,7 @@ function translate_load(func) { // add the translate code into the page loading 
 // insert the translator code within its own closure, shove the t function into the document's context
 if (window.top == window.self && //don't run in twitter's helper iframes
    window.location.toString().match(/^https?\:\/\/twitter\.com\//) && //only run on twitter.com
-  !document.getElementById('translate_script'))  //don't inject multiple times (bookmarklet)
+  !document.getElementById('translate_script'))  //don't inject multiple times 
 {
     var translate_script = document.createElement("script"); //create new <script> element
     translate_script.id = 'translate_script';
