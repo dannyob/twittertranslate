@@ -42,11 +42,11 @@ var translate = function () {
         console.log("Number of statuses"+n);
         for (var i=0; i<n; i++) {
             var status = statuses[i];
-            add_translater(status);
+            add_translator(status);
         }
     };
 
-    var add_translater = function(s) {
+    var add_translator = function(s) {
         var ttext = s.getElementsByClassName("tweet-text")[0].innerHTML;
         var action = s.getElementsByClassName("tweet-actions")[0];
         var encoded_ttext = encodeURIComponent(ttext);
