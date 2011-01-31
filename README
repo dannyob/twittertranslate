@@ -1,0 +1,18 @@
+Cyrus asked me to hack together a script for new Twitter that can translate
+individual tweets on the Twitter webpage.
+
+Here's the first version of it. I'm afraid it's cargo cult Javascript, clumsily
+assembled from:
+
+Jack Hsu's original Twitter Translate:
+http://userscripts.org/scripts/show/43115 
+
+Cyrus's adopted version:
+http://cyrusfarivar.com/blog/2009/06/20/how-to-translate-persian-twitter-messages-automatically/
+
+Chilla42o's modern TweetFilter: 
+http://userscripts.org/scripts/show/49905
+
+The *dream* would be a script that did this automatically, for all tweets on th
+page that don't look like they're in the language of the browser user. Feel
+free to mess with the code to make that dream come alive.
