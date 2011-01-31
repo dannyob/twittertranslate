@@ -65,7 +65,7 @@ var translate = function () {
 
         $(translateLink).addClass('translate_link');
         $(ttext).addClass('translation_'+s_id);
-        translateLink.innerHTML = "<i></i> <b>Translate</b>";
+        translateLink.innerHTML = '<span><i style="background-position: -187px -60px"></i><b>Translate</b></span>';
         translateLink.href = '#';
         translateLink.title ='Translate using Google';
 
