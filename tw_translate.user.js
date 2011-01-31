@@ -18,15 +18,20 @@
 
 var translate = function () {
 
-    var event_hashchange = function() {
-        console.log("hashchange");
-        console.log("created google div");
-        create_google_div();
-        console.log("decorating statuses");
-        decorate_statuses();
-        console.log("decorated statuses");
+    var event_nodeinserted = function(e) {
+        if (e.target.nodeType == 1 ) {
+            if (e.target.className == '_timestamp') {
+                return;
+            }
+            if (e.target.className == 'stream-item') {
+                decorate_statuses(e.target);
+            }
+            if (e.target.className == 'inner-pane') {
+                console.log(e.target);
+                decorate_statuses(e.target);
+            }
+        }
     }
-
 
     var create_google_div = function() {
         var loaderDiv = document.createElement('div');
@@ -35,9 +40,8 @@ var translate = function () {
         console.log("I created the div");
     };
 
-    var decorate_statuses = function() {
-        var statuses = document.getElementsByClassName("tweet-content");
-        console.log(document);
+    var decorate_statuses = function(d) {
+        var statuses = d.getElementsByClassName("tweet");
         var n = statuses.length;
         console.log("Number of statuses"+n);
         for (var i=0; i<n; i++) {
@@ -47,28 +51,38 @@ var translate = function () {
     };
 
     var add_translator = function(s) {
-        var ttext = s.getElementsByClassName("tweet-text")[0].innerHTML;
-        var action = s.getElementsByClassName("tweet-actions")[0];
-        var encoded_ttext = encodeURIComponent(ttext);
+        if (s.getElementsByClassName("translate_link").length > 0) { 
+            return; }
+
         var langpair = '%7Cen';
         var dev_key = '&key=AIzaSyBIX8s4xecf9vnwGbxI5zESA59qHy4eNDA';
         var url = 'https://ajax.googleapis.com/ajax/services/language/translate?v=1.0'+dev_key+'&langpair='+langpair;
 
-        console.log("add: " + ttext);
-
+        var s_id = s.getAttribute('data-item-id') || s.getAttribute('data-tweet-id') || new Date().getTime() ;
+        var action = s.getElementsByClassName("tweet-actions")[0];
+        var ttext = s.getElementsByClassName("tweet-text")[0];
+        var encoded_ttext = encodeURIComponent(ttext.innerHTML);
         var translateLink = document.createElement("a");
+
+        $(translateLink).addClass('translate_link');
+        ttext.id = 'translation_'+s_id;
         translateLink.innerHTML = "<i></i> <b>Translate</b>";
         translateLink.href = '#';
         translateLink.title ='Translate using Google';
 
         var onclick = document.createAttribute("onclick");
         onclick.value = 'var s=document.createElement("script");' +
-            's.src="' + url + '&q=' + encoded_ttext + '&langpair=' + langpair + '&callback=t' + '&context=translation_' + status.id + '";' + 
+            's.src="' + url + '&q=' + encoded_ttext + '&langpair=' + langpair + '&callback=t' + '&context=translation_' + s_id + '";' + 
             'document.getElementById("google-translate-loader").appendChild(s);' +
             'return false;';
 
         translateLink.attributes.setNamedItem(onclick);
-        action.appendChild(translateLink);
+        if (action) {
+            action.appendChild(translateLink);
+        } else {
+            console.log("could not find action");
+            console.log(s);
+        }
     };
 
     var initialize = function() {      
@@ -82,8 +96,8 @@ var translate = function () {
             window.setTimeout(initialize, 1000); //reinitialize
             return;
         }
-        $(window).bind('hashchange', event_hashchange); //attach to hashchange event
-        event_hashchange(); //fire up
+        $(window).bind('DOMNodeInserted', event_nodeinserted);
+        create_google_div();
     };
 
     initialize();
@@ -108,7 +122,9 @@ function translate_load(func) {
 }
 
 function t(id, json, s, msg) {
-    console.log(json);
+    console.log(id);
+    var d = document.getElementById(id);
+    d.innerHTML = json[0].responseData.translatedText;
 }
 
 if (window.top == window.self && //don't run in twitter's helper iframes
