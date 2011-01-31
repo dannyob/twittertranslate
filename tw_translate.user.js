@@ -96,8 +96,9 @@ var translate = function () {
             window.setTimeout(initialize, 1000); //reinitialize
             return;
         }
-        $(window).bind('DOMNodeInserted', event_nodeinserted);
         create_google_div();
+        $(window).bind('DOMNodeInserted', event_nodeinserted);
+        check_for_tweets(document);
     };
 
     initialize();
