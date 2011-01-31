@@ -18,36 +18,38 @@
 
 var translate = function () {
 
-    var event_nodeinserted = function(e) {
-        if (e.target.nodeType == 1 ) {
-            if (e.target.className == '_timestamp') {
-                return;
-            }
-            if (e.target.className == 'stream-item') {
-                decorate_statuses(e.target);
-            }
-            if (e.target.className == 'inner-pane') {
-                window.setTimeout(function () { decorate_statuses(e.target); } , 1000); 
-            }
-        }
-    }
-
-    var create_google_div = function() {
+    var create_google_div = function() { // make a space to stash translator scripts later
         var loaderDiv = document.createElement('div');
         loaderDiv.id = 'google-translate-loader';
         document.body.appendChild(loaderDiv);
     };
 
-    var decorate_statuses = function(d) {
-        var statuses = d.getElementsByClassName("tweet");
-        var n = statuses.length;
+
+    var event_nodeinserted = function(e) { // whenever a node is inserted, check it for tweets
+        if (e.target.nodeType == 1 ) {
+            if (e.target.className == '_timestamp') {
+                return;
+            }
+            if (e.target.className == 'stream-item') {
+                check_for_tweets(e.target);
+            }
+            if (e.target.className == 'inner-pane') {
+                // right-hand pane takes some time to load, so delay our tweet checking
+                window.setTimeout(function () { check_for_tweets(e.target); } , 1000); 
+            }
+        }
+    }
+
+    var check_for_tweets = function(d) { // find any tweets, and if so add a 'Translate' action
+        var tweets = d.getElementsByClassName("tweet");
+        var n = tweets.length;
         for (var i=0; i<n; i++) {
-            var status = statuses[i];
-            add_translator(status);
+            var this_tweet = tweets[i];
+            add_translator(this_tweet);
         }
     };
 
-    var add_translator = function(s) {
+    var add_translator = function(s) { // add that Translate action, get it to run Google Translate
         if (s.getElementsByClassName("translate_link").length > 0) { 
             return; }
 
@@ -97,7 +99,20 @@ var translate = function () {
     initialize();
 }
 
-function translate_load(func) {
+function t(c, json, s, msg) { // callback from Google Translate. Write the translation back into the text.
+    var d = document.getElementsByClassName(c)
+    var n = d.length
+    var translation = json[0].responseData.translatedText;
+    if (s != 200) {
+        translation = "Error: "+msg;
+    }
+    for (var i=0; i<n; i++) {
+        d[i].innerHTML = translation;
+    }
+}
+
+
+function translate_load(func) { // add the translate code into the page loading process
   if (document.readyState == "complete") { //chrome
     func();
   } else {
@@ -115,18 +130,7 @@ function translate_load(func) {
   }
 }
 
-function t(c, json, s, msg) {
-    var d = document.getElementsByClassName(c)
-    var n = d.length
-    var translation = json[0].responseData.translatedText;
-    if (s != 200) {
-        translation = "Error: "+msg;
-    }
-    for (var i=0; i<n; i++) {
-        d[i].innerHTML = translation;
-    }
-}
-
+// insert the translator code within its own closure, shove the t function into the document's context
 if (window.top == window.self && //don't run in twitter's helper iframes
    window.location.toString().match(/^https?\:\/\/twitter\.com\//) && //only run on twitter.com
   !document.getElementById('translate_script'))  //don't inject multiple times (bookmarklet)
