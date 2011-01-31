@@ -65,7 +65,7 @@ var translate = function () {
         var translateLink = document.createElement("a");
 
         $(translateLink).addClass('translate_link');
-        ttext.id = 'translation_'+s_id;
+        $(ttext).addClass('translation_'+s_id);
         translateLink.innerHTML = "<i></i> <b>Translate</b>";
         translateLink.href = '#';
         translateLink.title ='Translate using Google';
@@ -121,10 +121,16 @@ function translate_load(func) {
   }
 }
 
-function t(id, json, s, msg) {
-    console.log(id);
-    var d = document.getElementById(id);
-    d.innerHTML = json[0].responseData.translatedText;
+function t(c, json, s, msg) {
+    var d = document.getElementsByClassName(c)
+    var n = d.length
+    var translation = json[0].responseData.translatedText;
+    if (s != 200) {
+        translation = "Error: "+msg;
+    }
+    for (var i=0; i<n; i++) {
+        d[i].innerHTML = translation;
+    }
 }
 
 if (window.top == window.self && //don't run in twitter's helper iframes
