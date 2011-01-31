@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name           Translate Tweets
-// @namespace      https://cpj.org/
+// @namespace      https://www.spesh.com/danny
 // @include        http://twitter.com/*
 // @include        http://*.twitter.com/*
 // @include        https://*.twitter.com/*
@@ -8,13 +8,16 @@
 // ==/UserScript==
 // 
 //  Source at: https://github.com/dannyob/twittertranslate
-//  Adapted from:
+//  
+//  Many many thanks to:
 //  Jack Hsu's original Twitter Translate:
 //  http://userscripts.org/scripts/show/43115 
 //  
 //  Chilla42o's modern TweetFilter: 
 //  http://userscripts.org/scripts/show/49905
 // 
+//  James P Gilbert's Clarify Twitter:
+//  http://userscripts.org/scripts/show/94579
 
 var translate = function () {
 
@@ -55,6 +58,7 @@ var translate = function () {
 
         var langpair = '%7Cen';
         var dev_key = '&key=AIzaSyBIX8s4xecf9vnwGbxI5zESA59qHy4eNDA';
+        dev_key = ""; // I think we might do better with no key, I can't tell
         var url = 'https://ajax.googleapis.com/ajax/services/language/translate?v=1.0'+dev_key+'&langpair='+langpair;
 
         var s_id = s.getAttribute('data-item-id') || s.getAttribute('data-tweet-id') || new Date().getTime() ;
